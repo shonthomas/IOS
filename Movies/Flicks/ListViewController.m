@@ -18,12 +18,16 @@
 @interface ListViewController () <UITableViewDelegate, UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource>
 
 @property (nonatomic, strong) NSArray *movies;
+@property (strong, nonatomic) NSMutableArray* filteredMovies;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (nonatomic,strong) NSString *layoutType;
+@property BOOL isFiltered;
+
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIView *errorView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (weak, nonatomic) IBOutlet UISearchBar *movieSearch;
 
 //UISegmentedControl *segmentedControl;
 
@@ -36,10 +40,15 @@
     
     self.layoutType = @"list";
     
+    // setup search bar
+    self.movieSearch.delegate = (id)self;
+    
     // Grid View
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
     
+//    self.tableView.rowHeight = UITableViewAutomaticDimension;
+//    self.tableView.estimatedRowHeight = 100;
     
     // List View
     [self.tableView setBackgroundColor:[UIColor clearColor]];
@@ -126,13 +135,23 @@
 // Collection View
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    NSLog(@"collection movies count: %lu", (unsigned long)self.movies.count);
-    return self.movies.count;
+    if(self.isFiltered) {
+        return self.filteredMovies.count;
+    } else {
+        return self.movies.count;
+    }
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     
-    NSDictionary *movie = self.movies[indexPath.row];
+    NSMutableArray *data;
+    if(self.isFiltered) {
+        data = self.filteredMovies;
+    } else {
+        data = self.movies;
+    }
+    
+    NSDictionary *movie = data[indexPath.row];
     static NSString *identifier = @"MovieGridCell";
     
     MovieGridCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
@@ -148,20 +167,34 @@
 }
 
 - (void)viewDidLayoutSubviews {
-    [self.collectionView setContentInset: UIEdgeInsetsMake(self.navigationController.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height, 0, 0, 0)];
-    [self.collectionView setScrollIndicatorInsets:UIEdgeInsetsMake(self.navigationController.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height, 0, 0, 0)];
+    CGFloat topOffset = self.navigationController.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height + self.movieSearch.bounds.size.height;
+    [self.tableView setContentInset: UIEdgeInsetsMake(topOffset, 0, 0, 0)];
+    [self.tableView setScrollIndicatorInsets:UIEdgeInsetsMake(topOffset, 0, 0, 0)];
+    [self.collectionView setContentInset: UIEdgeInsetsMake(topOffset, 0, 0, 0)];
+    [self.collectionView setScrollIndicatorInsets:UIEdgeInsetsMake(topOffset, 0, 0, 0)];
 }
 
 // Table View
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.movies.count;
+    if(self.isFiltered) {
+        return self.filteredMovies.count;
+    } else {
+        return self.movies.count;
+    }
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSDictionary *movie = self.movies[indexPath.row];
+    NSMutableArray *data;
+    if(self.isFiltered) {
+        data = self.filteredMovies;
+    } else {
+        data = self.movies;
+    }
+    
+    NSDictionary *movie = data[indexPath.row];
     
     MovieCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MovieCell"];
     cell.titleLable.text = movie[@"title"];
@@ -205,6 +238,7 @@
         [self.tableView reloadData];
     }
     [self scrollToTop];
+    [self startedScrolling];
 }
 
 - (void)refreshView {
@@ -246,7 +280,8 @@
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-//    if ([segue.identifier isEqualToString: @"movieDetailSegue"]) {
+    if ([segue.identifier isEqualToString: @"movieDetailSegue"]) {
+        [self.movieSearch endEditing:YES];
         NSIndexPath *indexPath;
         if ([self.layoutType isEqualToString:@"grid"]) {
             UICollectionViewCell *cell = sender;
@@ -256,8 +291,12 @@
             indexPath = [self.tableView indexPathForCell:cell];
         }
         MovieDetailViewController *vc = segue.destinationViewController;
-        vc.movie = self.movies[indexPath.row];
-//    }
+        if(self.isFiltered) {
+            vc.movie = self.filteredMovies[indexPath.row];
+        } else {
+            vc.movie = self.movies[indexPath.row];
+        }
+    }
 }
 
 - (void)segmentAction:(UISegmentedControl *)segment {
@@ -274,6 +313,69 @@
         [self.collectionView addSubview:self.refreshControl];
         [self reloadData];
     }
+}
+
+// Search bar
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self startedScrolling];
+}
+
+- (void)startedScrolling {
+    CGFloat scrollOffset;
+    if ([self.layoutType isEqualToString:@"grid"]) {
+        scrollOffset = self.collectionView.contentOffset.y;
+    } else {
+        scrollOffset = self.tableView.contentOffset.y;
+    }
+    CGFloat insetTop = self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.bounds.size.height;
+    if (scrollOffset <= insetTop) {
+        [self animateSearchBarTo:(self.navigationController.navigationBar.bounds.size.height) + 20];
+    } else {
+        [self animateSearchBarTo:0];
+    }
+}
+
+- (void)animateSearchBarTo:(CGFloat)y {
+    [UIView animateWithDuration:0.2 animations:^{
+        CGRect frame = self.movieSearch.frame;
+        frame.origin.y = y;
+        [self.movieSearch setFrame:frame];
+    }];
+}
+
+// Search
+
+-(void)searchBar:(UISearchBar*)searchBar textDidChange:(NSString*)text {
+    if(text.length == 0) {
+        self.isFiltered = NO;
+    } else {
+        self.isFiltered = YES;
+        self.filteredMovies = [[NSMutableArray alloc] init];
+        
+        for (NSDictionary *movie in self.movies) {
+            NSRange nameRange = [movie[@"title"] rangeOfString:text options:NSCaseInsensitiveSearch];
+            NSRange descriptionRange = [movie[@"overview"] rangeOfString:text options:NSCaseInsensitiveSearch];
+            if(nameRange.location != NSNotFound || descriptionRange.location != NSNotFound) {
+                [self.filteredMovies addObject:movie];
+            }
+        }
+    }
+    [self reloadData];
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    [searchBar setShowsCancelButton:YES animated:YES];
+}
+
+-(void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+    [searchBar setShowsCancelButton:NO animated:YES];
+    [searchBar endEditing:YES];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar {
+    [searchBar setShowsCancelButton:NO animated:YES];
+    [searchBar endEditing:YES];
 }
 
 @end
