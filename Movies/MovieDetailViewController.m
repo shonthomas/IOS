@@ -30,13 +30,12 @@
 
     self.titleLable.text = self.movie[@"title"];
     self.synopsisLabel.text = self.movie[@"overview"];
-    [self.synopsisLabel sizeToFit];
     
-    CGRect frame = self.infoView.frame;
-    frame.size.height = self.synopsisLabel.frame.size.height + self.synopsisLabel.frame.origin.y + 20;
-    self.infoView.frame = frame;
-    
-    self.scrollView.contentSize = CGSizeMake(self.scrollView.frame.size.width, 40 + self.infoView.frame.origin.y + self.infoView.frame.size.height);
+//    CGRect frame = self.infoView.frame;
+//    frame.size.height = self.synopsisLabel.frame.size.height + self.synopsisLabel.frame.origin.y + 20;
+//    self.infoView.frame = frame;
+//    
+//    self.scrollView.contentSize = CGSizeMake(self.scrollView.frame.size.width, 40 + self.infoView.frame.origin.y + self.infoView.frame.size.height);
     
 
     // Load Image
