@@ -47,8 +47,9 @@
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
     
-//    self.tableView.rowHeight = UITableViewAutomaticDimension;
-//    self.tableView.estimatedRowHeight = 100;
+    // To give the table rows auto height
+    // self.tableView.rowHeight = UITableViewAutomaticDimension;
+    // self.tableView.estimatedRowHeight = 100;
     
     // List View
     [self.tableView setBackgroundColor:[UIColor clearColor]];
@@ -72,7 +73,7 @@
     [self.refreshControl addTarget:self action:@selector(refreshView) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:self.refreshControl];
     
-    // Handle layout change
+    // Handle layout change, list/grid
     [self.layoutControl addTarget:self action:@selector(segmentAction:) forControlEvents:UIControlEventValueChanged];
     
     // Loading movies from the API
@@ -167,11 +168,18 @@
 }
 
 - (void)viewDidLayoutSubviews {
-    CGFloat topOffset = self.navigationController.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height + self.movieSearch.bounds.size.height;
+//    CGFloat topOffset = self.topLayoutGuide.length + [UIApplication sharedApplication].statusBarFrame.size.height + self.movieSearch.bounds.size.height;
+    ;
+    CGFloat navBarHeight = self.navigationController.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
+    CGFloat topOffset = navBarHeight + self.movieSearch.bounds.size.height;
     [self.tableView setContentInset: UIEdgeInsetsMake(topOffset, 0, 0, 0)];
     [self.tableView setScrollIndicatorInsets:UIEdgeInsetsMake(topOffset, 0, 0, 0)];
     [self.collectionView setContentInset: UIEdgeInsetsMake(topOffset, 0, 0, 0)];
     [self.collectionView setScrollIndicatorInsets:UIEdgeInsetsMake(topOffset, 0, 0, 0)];
+    
+    CGRect frame = self.movieSearch.frame;
+    frame.origin.y = navBarHeight;
+    [self.movieSearch setFrame:frame];
 }
 
 // Table View
@@ -198,9 +206,7 @@
     
     MovieCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MovieCell"];
     cell.titleLable.text = movie[@"title"];
-    cell.synopsisLabel.text = movie[@"overview"];
-    [cell.synopsisLabel sizeToFit];
-    
+    cell.synopsisLabel.text = movie[@"overview"];    
     
     //Thumbnail image
     
@@ -238,7 +244,7 @@
         [self.tableView reloadData];
     }
     [self scrollToTop];
-    [self startedScrolling];
+    [self scrollingEnded];
 }
 
 - (void)refreshView {
@@ -254,7 +260,6 @@
     messageLabel.numberOfLines = 0;
     messageLabel.textAlignment = NSTextAlignmentCenter;
     messageLabel.font = [UIFont fontWithName:@"Palatino-Italic" size:20];
-    [messageLabel sizeToFit];
     
     self.tableView.backgroundView = messageLabel;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -318,10 +323,10 @@
 // Search bar
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self startedScrolling];
+    [self scrollingEnded];
 }
 
-- (void)startedScrolling {
+- (void)scrollingEnded {
     CGFloat scrollOffset;
     if ([self.layoutType isEqualToString:@"grid"]) {
         scrollOffset = self.collectionView.contentOffset.y;
@@ -330,7 +335,7 @@
     }
     CGFloat insetTop = self.navigationController.navigationBar.frame.origin.y + self.navigationController.navigationBar.bounds.size.height;
     if (scrollOffset <= insetTop) {
-        [self animateSearchBarTo:(self.navigationController.navigationBar.bounds.size.height) + 20];
+        [self animateSearchBarTo:insetTop];
     } else {
         [self animateSearchBarTo:0];
     }
@@ -354,9 +359,9 @@
         self.filteredMovies = [[NSMutableArray alloc] init];
         
         for (NSDictionary *movie in self.movies) {
-            NSRange nameRange = [movie[@"title"] rangeOfString:text options:NSCaseInsensitiveSearch];
-            NSRange descriptionRange = [movie[@"overview"] rangeOfString:text options:NSCaseInsensitiveSearch];
-            if(nameRange.location != NSNotFound || descriptionRange.location != NSNotFound) {
+            NSRange titleRange = [movie[@"title"] rangeOfString:text options:NSCaseInsensitiveSearch];
+            NSRange overviewRange = [movie[@"overview"] rangeOfString:text options:NSCaseInsensitiveSearch];
+            if(titleRange.location != NSNotFound || overviewRange.location != NSNotFound) {
                 [self.filteredMovies addObject:movie];
             }
         }
@@ -365,7 +370,7 @@
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    [searchBar setShowsCancelButton:YES animated:YES];
+    [searchBar setShowsCancelButton:YES];
 }
 
 -(void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
@@ -374,7 +379,7 @@
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar {
-    [searchBar setShowsCancelButton:NO animated:YES];
+    [searchBar setShowsCancelButton:NO];
     [searchBar endEditing:YES];
 }
 
