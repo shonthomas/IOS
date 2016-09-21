@@ -23,6 +23,8 @@
 		7D6CEE8E1D91D7B400031423 /* TweetCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D6CEE8C1D91D7B400031423 /* TweetCell.xib */; };
 		7D6CEE931D9230E500031423 /* ComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6CEE911D9230E500031423 /* ComposeViewController.m */; };
 		7D6CEE941D9230E500031423 /* ComposeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D6CEE921D9230E500031423 /* ComposeViewController.xib */; };
+		7D6CEE991D92E99100031423 /* TweetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6CEE971D92E99100031423 /* TweetViewController.m */; };
+		7D6CEE9A1D92E99100031423 /* TweetViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7D6CEE981D92E99100031423 /* TweetViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +54,9 @@
 		7D6CEE901D9230E500031423 /* ComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComposeViewController.h; sourceTree = "<group>"; };
 		7D6CEE911D9230E500031423 /* ComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ComposeViewController.m; sourceTree = "<group>"; };
 		7D6CEE921D9230E500031423 /* ComposeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComposeViewController.xib; sourceTree = "<group>"; };
+		7D6CEE961D92E99100031423 /* TweetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TweetViewController.h; sourceTree = "<group>"; };
+		7D6CEE971D92E99100031423 /* TweetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TweetViewController.m; sourceTree = "<group>"; };
+		7D6CEE981D92E99100031423 /* TweetViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TweetViewController.xib; sourceTree = "<group>"; };
 		A3BD6FF736DFD53CA9464C9D /* Pods-Twitter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Twitter.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Twitter/Pods-Twitter.debug.xcconfig"; sourceTree = "<group>"; };
 		B4EF9AFBFA6483FC8C5F5729 /* libPods-Twitter.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Twitter.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -98,6 +103,7 @@
 		7D6CEE531D9080FC00031423 /* Twitter */ = {
 			isa = PBXGroup;
 			children = (
+				7D6CEE951D92E97600031423 /* Tweet */,
 				7D6CEE8F1D9230C800031423 /* Compose */,
 				7D6CEE891D91C92100031423 /* Home */,
 				7D6CEE881D91C90C00031423 /* Login */,
@@ -174,6 +180,16 @@
 			name = Compose;
 			sourceTree = "<group>";
 		};
+		7D6CEE951D92E97600031423 /* Tweet */ = {
+			isa = PBXGroup;
+			children = (
+				7D6CEE961D92E99100031423 /* TweetViewController.h */,
+				7D6CEE971D92E99100031423 /* TweetViewController.m */,
+				7D6CEE981D92E99100031423 /* TweetViewController.xib */,
+			);
+			name = Tweet;
+			sourceTree = "<group>";
+		};
 		DA4AFB5F76132D0E0495F1DB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -243,6 +259,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D6CEE861D91C12A00031423 /* LoginViewController.xib in Resources */,
+				7D6CEE9A1D92E99100031423 /* TweetViewController.xib in Resources */,
 				7D6CEE941D9230E500031423 /* ComposeViewController.xib in Resources */,
 				7D6CEE8E1D91D7B400031423 /* TweetCell.xib in Resources */,
 				7D6CEE811D91ACF700031423 /* TweetsViewController.xib in Resources */,
@@ -310,6 +327,7 @@
 				7D6CEE591D9080FC00031423 /* AppDelegate.m in Sources */,
 				7D6CEE7C1D909E8600031423 /* User.m in Sources */,
 				7D6CEE931D9230E500031423 /* ComposeViewController.m in Sources */,
+				7D6CEE991D92E99100031423 /* TweetViewController.m in Sources */,
 				7D6CEE791D909E6D00031423 /* Tweet.m in Sources */,
 				7D6CEE851D91C12A00031423 /* LoginViewController.m in Sources */,
 				7D6CEE561D9080FC00031423 /* main.m in Sources */,
