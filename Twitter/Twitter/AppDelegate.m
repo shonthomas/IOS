@@ -12,6 +12,7 @@
 #import "User.h"
 #import "Tweet.h"
 #import "TweetsViewController.h"
+#import "MenuViewController.h"
 
 @interface AppDelegate ()
 
@@ -30,15 +31,8 @@
     User *user = [User currentUser];
     if (user != nil) {
         NSLog(@"Welcome %@", user.name);
-        
-        TweetsViewController *tweeteVC = [[TweetsViewController alloc] init];
-        UINavigationController *tweeteNC = [[UINavigationController alloc] initWithRootViewController:tweeteVC];
-        tweeteNC.navigationBar.barTintColor = [UIColor colorWithRed:41.0f/255.0f green:158.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
-        [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
-        [tweeteNC.navigationBar setTitleTextAttributes:
-         @{NSForegroundColorAttributeName:[UIColor whiteColor]}];
-    
-        self.window.rootViewController = tweeteNC;
+        MenuViewController *menuVC = [[MenuViewController alloc] init];
+        self.window.rootViewController = menuVC;
     } else {
         NSLog(@"Not logged in");
         self.window.rootViewController = [[LoginViewController alloc] init];

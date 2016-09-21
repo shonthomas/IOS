@@ -9,6 +9,7 @@
 #import "LoginViewController.h"
 #import "TwitterClient.h"
 #import "TweetsViewController.h"
+#import "MenuViewController.h"
 
 @interface LoginViewController ()
 
@@ -31,15 +32,8 @@
         if (user != nil) {
             // Modally present tweets view
             NSLog(@"Welcome to %@", user.name);
-            
-            TweetsViewController *tweeteVC = [[TweetsViewController alloc] init];
-            UINavigationController *tweeteNC = [[UINavigationController alloc] initWithRootViewController:tweeteVC];
-            tweeteNC.navigationBar.barTintColor = [UIColor colorWithRed:41.0f/255.0f green:158.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
-            [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
-            [tweeteNC.navigationBar setTitleTextAttributes:
-             @{NSForegroundColorAttributeName:[UIColor whiteColor]}];
-            
-            [self presentViewController:tweeteNC animated:YES completion:nil];
+            MenuViewController *menuVC = [[MenuViewController alloc] init];
+            [self presentViewController:menuVC animated:YES completion:nil];
         } else {
             // Present error view
         }

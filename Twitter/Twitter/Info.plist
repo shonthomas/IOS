@@ -27,7 +27,7 @@
 			<string>shon.Twitter</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>cptwitterdemo</string>
+				<string>shontwitterapp</string>
 			</array>
 		</dict>
 	</array>

@@ -37,12 +37,12 @@ NSString * const kTwitterBaseUrl = @"https://api.twitter.com";
 - (void)loginWithCompletion:(void (^)(User *user, NSError *error))completion {
     self.loginCompletion = completion;
     [self.requestSerializer removeAccessToken];
-    [self fetchRequestTokenWithPath:@"oauth/request_token" method:@"GET" callbackURL:[NSURL URLWithString:@"cptwitterdemo://oauth"] scope:nil success:^(BDBOAuthToken *requestToken) {
+    [self fetchRequestTokenWithPath:@"oauth/request_token" method:@"GET" callbackURL:[NSURL URLWithString:@"shontwitterapp://oauth"] scope:nil success:^(BDBOAuthToken *requestToken) {
         NSLog(@"got the request token");
+        NSLog(@"https://api.twitter.com/oauth/authorize?oauth_token=%@", requestToken.token);
         
         NSURL *authURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.twitter.com/oauth/authorize?oauth_token=%@", requestToken.token]];
         [[UIApplication sharedApplication] openURL:authURL];
-        
     } failure:^(NSError *error) {
         NSLog(@"failed to get the request token");
         self.loginCompletion(nil, error);
