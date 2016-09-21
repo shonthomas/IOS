@@ -26,6 +26,7 @@
 }
 
 - (void)setTweet:(Tweet *)tweet {
+    _tweet = tweet;
     
     User *user = tweet.user;
     
@@ -102,6 +103,61 @@
     
     [self.retweetButton setSelected:tweet.retweeted];
     [self.favoriteButton setSelected:tweet.favorited];
+}
+
+- (IBAction)onReply:(id)sender {
+    [self.delegate onReply:self];
+}
+
+- (IBAction)onFavorite:(id)sender {
+    Tweet *tweetToFavorite;
+    if (_tweet.retweetedTweet) {
+        tweetToFavorite = _tweet.retweetedTweet;
+    } else {
+        tweetToFavorite = _tweet;
+    }
+    
+    BOOL favorited = [tweetToFavorite favorite];
+    
+    // favorite/unfavorite the source
+    if (_tweet.retweetedTweet) {
+        _tweet.favorited = favorited;
+    }
+    
+    if (favorited) {
+        self.favoriteCountLabel.textColor = [UIColor orangeColor];
+    } else {
+        self.favoriteCountLabel.textColor = [UIColor grayColor];
+    }
+    if (tweetToFavorite.favoriteCount > 0) {
+        self.favoriteCountLabel.text = [NSString stringWithFormat:@"%ld", (long)tweetToFavorite.favoriteCount];
+    } else {
+        self.favoriteCountLabel.text = @"";
+    }
+    [self highlightButton:self.favoriteButton highlight:favorited];
+}
+
+- (IBAction)onRetweet:(id)sender {
+    BOOL retweeted = [_tweet retweet];
+    if (retweeted) {
+        self.retweetCountLabel.textColor = [UIColor greenColor];
+    } else {
+        self.retweetCountLabel.textColor = [UIColor grayColor];
+    }
+    if (_tweet.retweetCount > 0) {
+        self.retweetCountLabel.text = [NSString stringWithFormat:@"%ld", (long)_tweet.retweetCount];
+    } else {
+        self.retweetCountLabel.text = @"";
+    }
+    [self highlightButton:self.retweetButton highlight:retweeted];
+}
+
+- (void)highlightButton:(UIButton *)button highlight:(BOOL)highlight {
+    if (highlight) {
+        [button setSelected:YES];
+    } else {
+        [button setSelected:NO];
+    }
 }
 
 @end

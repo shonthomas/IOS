@@ -40,6 +40,31 @@
     
     // set self as delegate for text view events
     self.tweetTextView.delegate = self;
+    
+    // set initial reply to string if a reply
+    if (_replyToTweet) {
+        // if replying to a retweet, mention original tweet author and retweeter
+        if (_replyToTweet.retweetedTweet) {
+            if ([_replyToTweet.user.screenName isEqualToString:[[User currentUser] screenName]]) {
+                self.tweetTextView.text = [NSString stringWithFormat:@"@%@ ", _replyToTweet.retweetedTweet.user.screenName];
+            } else {
+                self.tweetTextView.text = [NSString stringWithFormat:@"@%@ @%@ ", _replyToTweet.retweetedTweet.user.screenName, _replyToTweet.user.screenName];
+            }
+        } else {
+            self.tweetTextView.text = [NSString stringWithFormat:@"@%@ ", _replyToTweet.user.screenName];
+        }
+    }
+    
+    // set initial mention if writing to user
+    if (_messageToUser) {
+        self.tweetTextView.text = [NSString stringWithFormat:@"@%@ ", _messageToUser.screenName];
+    }
+    
+    // initialize character count
+    [self textViewDidChange:self.tweetTextView];
+    
+    // start with focus on the text view
+    [self.tweetTextView becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -53,6 +78,63 @@
     CGFloat navBarHeight = self.navigationController.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
     
     self.topMargin.constant = navBarHeight;
+}
+
+- (void)onCancel {
+    // update status bar appearance
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.view endEditing:YES];
+}
+
+- (void)onTweet {
+    Tweet *tweet = [[Tweet alloc] initWithText:self.tweetTextView.text replyToTweet:self.replyToTweet];
+    
+    [[TwitterClient sharedInstance] sendTweetWithParams:nil tweet:tweet completion:^(NSString *tweetIdStr, NSError *error) {
+        if (error) {
+            NSLog([NSString stringWithFormat:@"Error sending tweet: %@", tweet]);
+        } else {
+            // set tweet id so it can be favorited
+            NSLog([NSString stringWithFormat:@"Tweet successful, tweet id_str: %@", tweetIdStr]);
+            tweet.idStr = tweetIdStr;
+            if ([self.delegate respondsToSelector:@selector(didTweetSuccessfully)]) {
+                [self.delegate didTweetSuccessfully];
+            }
+        }
+    }];
+    
+    // update status bar appearance
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+//    [self.delegate didTweet:tweet];
+}
+
+- (void) textViewDidChange:(UITextView *)textView {
+    long charsLeft = 140 - textView.text.length;
+    
+    // if negative count, set to red
+    UIColor *titleColor = nil;
+    if (charsLeft < 0) {
+        titleColor = [UIColor redColor];
+    } else {
+        titleColor = [UIColor lightGrayColor];
+    }
+    if (charsLeft < 0 || charsLeft == 140) {
+        // disable tweet button
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+    } else {
+        // enable tweet button
+        self.navigationItem.rightBarButtonItem.enabled = YES;
+    }
+    
+    [self.navigationController.navigationBar setTitleTextAttributes:[NSDictionary dictionaryWithObject:titleColor forKey:NSForegroundColorAttributeName]];
+    
+    UILabel *charsLeftTitle = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 320, 44)];
+    charsLeftTitle.textAlignment = NSTextAlignmentRight;
+    charsLeftTitle.text = [NSString stringWithFormat:@"%ld", charsLeft];
+    [charsLeftTitle setFont: [UIFont fontWithName:@"Helvetica Neue" size:12.0]];
+    self.navigationItem.titleView = charsLeftTitle;
 }
 
 /*

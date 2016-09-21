@@ -7,12 +7,28 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Tweet.h"
 
-@interface ComposeViewController : UIViewController
+@protocol ComposeViewControllerDelegate <NSObject>
+
+- (void)didTweet:(Tweet *)tweet;
+
+@optional
+- (void)didTweetSuccessfully;
+
+@end
+
+@interface ComposeViewController : UIViewController <UITextViewDelegate>
+
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *topMargin;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *screenNameLabel;
 @property (weak, nonatomic) IBOutlet UITextView *tweetTextView;
+
+@property (nonatomic, strong) Tweet *replyToTweet;
+@property (nonatomic, strong) User *messageToUser;
+
+@property (nonatomic, weak) id <ComposeViewControllerDelegate> delegate;
 
 @end

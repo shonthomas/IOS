@@ -13,6 +13,7 @@
 #import "TweetCell.h"
 #import "MBProgressHUD.h"
 #import "ComposeViewController.h"
+#import "TweetViewController.h"
 
 @interface TweetsViewController ()
 
@@ -102,9 +103,9 @@
     return self.tweets.count;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     TweetCell *tweetCell = [tableView dequeueReusableCellWithIdentifier:@"TweetCell"];
+    
     tweetCell.tweet = self.tweets[indexPath.row];
     tweetCell.delegate = self;
     
@@ -115,6 +116,16 @@
     }
     
     return tweetCell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    // unhighlight selection
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    TweetViewController *vc = [[TweetViewController alloc] init];
+    vc.delegate = self;
+    vc.tweet = self.tweets[indexPath.row];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void) loadMoreTweets {
@@ -159,6 +170,20 @@
 
 - (void)refreshView {
     [self loadTweets];
+}
+
+- (void)onReply:(TweetCell *)tweetCell {
+    ComposeViewController *composeVC = [[ComposeViewController alloc] init];
+    composeVC.delegate = self;
+    UINavigationController *composeNC = [[UINavigationController alloc] initWithRootViewController:composeVC];
+    composeNC.navigationBar.barTintColor = [UIColor colorWithRed:41.0f/255.0f green:158.0f/255.0f blue:238.0f/255.0f alpha:1.0f];
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    [composeNC.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
+    
+    // set reply to tweet property
+    composeVC.replyToTweet = tweetCell.tweet;
+    
+    [self presentViewController:composeNC animated:YES completion:nil];
 }
 
 @end

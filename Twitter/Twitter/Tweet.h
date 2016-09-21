@@ -25,6 +25,10 @@
 
 
 - (id)initWithDictionary:(NSDictionary *) dictionary;
-+ (NSArray *)tweetsWithArray:(NSArray * )array;
+- (id) initWithText:(NSString *)text replyToTweet:(Tweet *)replyToTweet;
+- (BOOL) retweet;
+- (BOOL) favorite;
+
++ (NSArray *)tweetsWithArray:(NSArray *)array;
 
 @end
