@@ -8,6 +8,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProfileViewController">
             <connections>
                 <outlet property="bgImageHeightConstraint" destination="brv-Qy-dIl" id="sWz-T9-NAf"/>
+                <outlet property="bgImageTopConstraint" destination="gRE-k8-S4R" id="zRu-sx-45P"/>
                 <outlet property="bgView" destination="scN-CK-eVB" id="5LP-GE-Kei"/>
                 <outlet property="tableView" destination="uh1-Hi-fvI" id="WPM-e0-TAs"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -18,7 +19,7 @@
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="scN-CK-eVB" userLabel="Background">
+                <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="scN-CK-eVB" userLabel="Background">
                     <rect key="frame" x="0.0" y="0.0" width="600" height="80"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="80" id="brv-Qy-dIl"/>

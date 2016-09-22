@@ -116,6 +116,15 @@
                         <color key="textColor" red="0.52692307692307694" green="0.52692307692307694" blue="0.52692307692307694" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mTB-pH-1UN">
+                        <rect key="frame" x="8" y="8" width="56" height="56"/>
+                        <state key="normal">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                        <connections>
+                            <action selector="onProfile:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Wkj-rV-r1J"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="y14-qb-COG" secondAttribute="trailing" constant="8" id="1jF-D2-zuU"/>
@@ -124,6 +133,7 @@
                     <constraint firstItem="y14-qb-COG" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="2UQ-zp-FiQ"/>
                     <constraint firstItem="y14-qb-COG" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="5fQ-jl-T4B"/>
                     <constraint firstItem="sdI-Ut-Xsi" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="5sd-WI-24Y"/>
+                    <constraint firstItem="mTB-pH-1UN" firstAttribute="height" secondItem="sdI-Ut-Xsi" secondAttribute="height" id="8xs-8q-21I"/>
                     <constraint firstItem="y14-qb-COG" firstAttribute="top" relation="greaterThanOrEqual" secondItem="6I2-sC-68u" secondAttribute="bottom" constant="7" id="Ak6-9g-Efc"/>
                     <constraint firstItem="rY7-lX-ad8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="xiG-gh-606" secondAttribute="trailing" constant="4" id="MMr-UT-lB6"/>
                     <constraint firstItem="y14-qb-COG" firstAttribute="top" relation="greaterThanOrEqual" secondItem="6I2-sC-68u" secondAttribute="bottom" constant="6" id="N1Y-LM-R9W"/>
@@ -133,9 +143,12 @@
                     <constraint firstItem="y14-qb-COG" firstAttribute="top" relation="greaterThanOrEqual" secondItem="sdI-Ut-Xsi" secondAttribute="bottom" constant="8" id="YOp-Hg-i1j"/>
                     <constraint firstItem="xiG-gh-606" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="7" id="btS-hh-HY6"/>
                     <constraint firstItem="sdI-Ut-Xsi" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="cZ7-4A-74c"/>
+                    <constraint firstItem="mTB-pH-1UN" firstAttribute="leading" secondItem="sdI-Ut-Xsi" secondAttribute="leading" id="efB-Ea-uFq"/>
                     <constraint firstItem="y14-qb-COG" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="h5A-sp-ibP"/>
                     <constraint firstItem="Raa-vO-4kz" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="7" id="hMN-8C-qfS"/>
+                    <constraint firstItem="mTB-pH-1UN" firstAttribute="bottom" secondItem="sdI-Ut-Xsi" secondAttribute="bottom" id="ktA-tS-a7v"/>
                     <constraint firstItem="6I2-sC-68u" firstAttribute="top" secondItem="xiG-gh-606" secondAttribute="bottom" constant="5" id="mio-70-HM9"/>
+                    <constraint firstItem="mTB-pH-1UN" firstAttribute="width" secondItem="sdI-Ut-Xsi" secondAttribute="width" id="oIx-aN-6nS"/>
                     <constraint firstItem="6I2-sC-68u" firstAttribute="leading" secondItem="sdI-Ut-Xsi" secondAttribute="trailing" constant="8" id="qmP-Zp-pZV"/>
                     <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="6I2-sC-68u" secondAttribute="trailing" constant="8" id="rWg-a3-oMl"/>
                     <constraint firstItem="y14-qb-COG" firstAttribute="top" relation="greaterThanOrEqual" secondItem="sdI-Ut-Xsi" secondAttribute="bottom" constant="7" id="tpK-PL-hCW"/>

@@ -14,6 +14,7 @@
 #import "MBProgressHUD.h"
 #import "ComposeViewController.h"
 #import "TweetViewController.h"
+#import "ProfileViewController.h"
 
 @interface TweetsViewController ()
 
@@ -173,6 +174,30 @@
     [self loadTweets];
 }
 
+- (void)didTweet:(Tweet *)tweet {
+    NSMutableArray *temp = [NSMutableArray arrayWithArray:self.tweets];
+    [temp insertObject:tweet atIndex:0];
+    self.tweets = [temp copy];
+    [self.tweetTableView reloadData];
+}
+
+- (void)didTweetSuccessfully {
+    // so a newly generated tweet can be replied or favorited
+    [self.tweetTableView reloadData];
+}
+
+- (void)didReply:(Tweet *)tweet {
+    [self didTweet:tweet];
+}
+
+- (void)didRetweet:(BOOL)didRetweet {
+    [self.tweetTableView reloadData];
+}
+
+- (void)didFavorite:(BOOL)didFavorite {
+    [self.tweetTableView reloadData];
+}
+
 - (void)onReply:(TweetCell *)tweetCell {
     ComposeViewController *composeVC = [[ComposeViewController alloc] init];
     composeVC.delegate = self;
@@ -185,6 +210,12 @@
     composeVC.replyToTweet = tweetCell.tweet;
     
     [self presentViewController:composeNC animated:YES completion:nil];
+}
+
+- (void)onProfile:(User *)user {
+    ProfileViewController *profileVC = [[ProfileViewController alloc] init];
+    [profileVC setUser:user];
+    [self.navigationController pushViewController:profileVC animated:YES];
 }
 
 @end

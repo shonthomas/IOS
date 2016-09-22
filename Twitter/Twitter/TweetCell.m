@@ -152,6 +152,15 @@
     [self highlightButton:self.retweetButton highlight:retweeted];
 }
 
+- (IBAction)onProfile:(id)sender {
+    NSLog(@"Profile tapped");
+    if (_tweet.retweetedTweet) {
+        [self.delegate onProfile:_tweet.retweetedTweet.user];
+    } else {
+        [self.delegate onProfile:_tweet.user];
+    }
+}
+
 - (void)highlightButton:(UIButton *)button highlight:(BOOL)highlight {
     if (highlight) {
         [button setSelected:YES];

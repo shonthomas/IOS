@@ -20,6 +20,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIImageView *bgView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bgImageHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bgImageTopConstraint;
 
 @property (strong, nonatomic) NSArray *tweets;
 @property (strong, nonatomic) UIRefreshControl *refreshTweetsControl;
@@ -48,7 +49,12 @@
     
     // use banner url if provided, or profile bg url
     NSString *bannerUrl = user.bannerUrl ? [NSString stringWithFormat:@"%@/mobile_retina", user.bannerUrl] : user.backgroundImageUrl;
-    [self.bgView setImageWithURL:[NSURL URLWithString:bannerUrl]];
+//    NSString *bannerUrl = @"https://s3-media3.fl.yelpcdn.com/bphoto/YsiHTOAtIkyRp_IxSeObeA/o.jpg";
+    NSLog(@"Banner bannerUrl: %@", bannerUrl);
+    if ([bannerUrl isKindOfClass:[NSString class]]) {
+        NSLog(@"Banner bannerUrl ok: %@", bannerUrl);
+        [self.bgView setImageWithURL:[NSURL URLWithString:bannerUrl]];
+    }
     
     // register profile cell nib
     [self.tableView registerNib:[UINib nibWithNibName:@"ProfileCell" bundle:nil] forCellReuseIdentifier:@"ProfileCell"];
@@ -60,6 +66,7 @@
     self.tableView.delegate = self;
     self.tableView.estimatedRowHeight = 100;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.backgroundColor = [UIColor clearColor];
     
     // add pull to refresh tweets control
     self.refreshTweetsControl = [[UIRefreshControl alloc] init];
@@ -114,6 +121,7 @@
         
         // to handle page change event
         profileCell.delegate = self;
+        profileCell.backgroundColor = [UIColor clearColor];
         
         return profileCell;
     } else {
@@ -235,21 +243,21 @@
     [self.navigationController pushViewController:pvc animated:YES];
 }
 
-//- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    CGFloat scrollOffset = scrollView.contentOffset.y;
-//    
-//    if (scrollOffset < 0) {
-//        // pulling down
-//        self.bgImageHeightConstraint.constant = 80 - scrollOffset;
-//        self.bgImageTopConstraint.constant = 0;
-//    } else {
-//        // scrolling up
-//        self.bgImageHeightConstraint.constant = 80;
-//        
-//        // parallax
-//        self.bgImageTopConstraint.constant = - scrollOffset / 3;
-//    }
-//}
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    CGFloat scrollOffset = scrollView.contentOffset.y;
+    
+    if (scrollOffset < 0) {
+        // pulling down
+        self.bgImageHeightConstraint.constant = 80 - scrollOffset;
+        self.bgImageTopConstraint.constant = 0;
+    } else {
+        // scrolling up
+        self.bgImageHeightConstraint.constant = 80;
+        
+        // parallax
+        self.bgImageTopConstraint.constant = - scrollOffset / 3;
+    }
+}
 
 /*
 #pragma mark - Navigation
