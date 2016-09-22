@@ -10,11 +10,14 @@
 #import "ProfileViewController.h"
 #import "TweetsViewController.h"
 #import "TwitterClient.h"
+#import "User.h"
 
 @interface MenuViewController ()
 
 @property (strong, nonatomic) NSArray *viewControllers;
 @property (strong, nonatomic) UIViewController *currentVC;
+
+@property (strong, nonatomic) UITapGestureRecognizer *tap;
 
 @end
 
@@ -24,30 +27,21 @@
     [super viewDidLoad];
     
     // set bg color
-    self.view.backgroundColor = [UIColor colorWithRed:85/255.0f green:172/255.0f blue:238/255.0f alpha:1.0f];
+    self.view.backgroundColor = [UIColor colorWithRed:14/255.0f green:144/255.0f blue:233/255.0f alpha:1.0f];
     
     // reset constraint
     self.contentViewLeftMargin.constant = 0;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.backgroundColor = [UIColor clearColor];
+    self.tableView.tableFooterView = [UIView new];
     
     [self initViewControllers];
     [self.tableView reloadData];
 }
 
 - (void)initViewControllers {
-    
-    // Profile View
-    ProfileViewController *profileViewVC = [[ProfileViewController alloc] init];
-    UINavigationController *profileViewNC = [[UINavigationController alloc] initWithRootViewController:profileViewVC];
-    profileViewNC.navigationBar.barTintColor = [UIColor colorWithRed:85/255.0f green:172/255.0f blue:238/255.0f alpha:1.0f];
-    //[UIColor colorWithRed:41.0f/255.0f green:158.0f/255.0f blue:238.0f/255.0f alpha:1.0f]
-    profileViewNC.navigationBar.tintColor = [UIColor whiteColor];
-    [profileViewNC.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-    profileViewNC.navigationBar.translucent = NO;
-    // set self as delage for pull downs
-    profileViewVC.delegate = self;
     
     // Timeline
     TweetsViewController *tweetsVC = [[TweetsViewController alloc] init];
@@ -57,7 +51,15 @@
     [tweetsNC.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     tweetsNC.navigationBar.translucent = NO;
     
-    self.viewControllers = [NSArray arrayWithObjects:profileViewNC, tweetsNC, nil];
+    // Profile View
+    ProfileViewController *profileViewVC = [[ProfileViewController alloc] init];
+    UINavigationController *profileViewNC = [[UINavigationController alloc] initWithRootViewController:profileViewVC];
+    profileViewNC.navigationBar.barTintColor = [UIColor colorWithRed:85/255.0f green:172/255.0f blue:238/255.0f alpha:1.0f];
+    profileViewNC.navigationBar.tintColor = [UIColor whiteColor];
+    [profileViewNC.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+    profileViewNC.navigationBar.translucent = NO;
+    
+    self.viewControllers = [NSArray arrayWithObjects:tweetsNC, profileViewNC, nil];
     
     // set Timeline as initial view
     self.currentVC = tweetsNC;
@@ -73,75 +75,97 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    [self removeCurrentViewController];
-    self.currentVC = self.viewControllers[indexPath.row];
-    [self setContentController];
+    if (indexPath.row == 2) {
+        [User logout];
+    } else {
+        [self removeCurrentViewController];
+        self.currentVC = self.viewControllers[indexPath.row];
+        [self setContentController];
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 2;
+    return 3;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return self.tableView.bounds.size.height / 2;
-}
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    return self.tableView.bounds.size.height / 3;
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] init];
     switch (indexPath.row) {
         case 0:
-            cell.textLabel.text = @"Profile";
+            cell.textLabel.text = @"Home";
             break;
         case 1:
-            cell.textLabel.text = @"Timeline";
+            cell.textLabel.text = @"Profile";
+            break;
+        case 2:
+            cell.textLabel.text = @"Sign Out";
             break;
     }
     
+    UIView *bgColorView = [[UIView alloc] init];
+    bgColorView.backgroundColor = [UIColor colorWithRed:206.0f/255.0f green:231.0f/255.0f blue:248.0f/255.0f alpha:1.0f];
+    cell.selectedBackgroundView = bgColorView;
+    
     cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:21];
     cell.textLabel.textColor = [UIColor whiteColor];
-    // use twitter color https://about.twitter.com/press/brand-assets
-    cell.backgroundColor = [UIColor colorWithRed:85/255.0f green:172/255.0f blue:238/255.0f alpha:1.0f];
+    cell.backgroundColor = [UIColor clearColor];
     
     return cell;
 }
 
 - (void)removeCurrentViewController {
-    //    [self.currentVC willMoveToParentViewController:nil];
-    //    [self.currentVC.view removeFromSuperview];
-    //    [self.currentVC removeFromParentViewController];
+    [self.currentVC willMoveToParentViewController:nil];
+    [self.currentVC.view removeFromSuperview];
+    [self.currentVC didMoveToParentViewController:nil];
 }
 
 - (void)setContentController {
     self.currentVC.view.frame = self.contentView.bounds;
+    [self.currentVC willMoveToParentViewController:self];
     [self.contentView addSubview:self.currentVC.view];
     [self.currentVC didMoveToParentViewController:self];
     
     [UIView animateWithDuration:.24 animations:^{
-        self.contentViewLeftMargin.constant = 0;
+        [self showContentViewController];
         [self.view layoutIfNeeded];
     }];
 }
 
 - (void)showProfileViewController {
     [self removeCurrentViewController];
-    self.currentVC = self.viewControllers[0];
+    self.currentVC = self.viewControllers[1];
     [self setContentController];
 }
 
-- (IBAction)didSwipeLeft:(UISwipeGestureRecognizer *)sender {
-    NSLog(@"Swipe left detected");
+- (void)showContentViewController {
+    self.contentView.center = CGPointMake(self.contentView.bounds.size.width/2, self.contentView.center.y);
+    // self.contentView.userInteractionEnabled = YES;
+    [self.contentView removeGestureRecognizer:self.tap];
+}
+
+- (void)dismissMenu {
     [UIView animateWithDuration:.24 animations:^{
-        self.contentViewLeftMargin.constant = 0;
+        [self showContentViewController];
+    }];
+}
+
+- (IBAction)didSwipeLeft:(UISwipeGestureRecognizer *)sender {
+    [UIView animateWithDuration:.24 animations:^{
+        [self showContentViewController];
         [self.view layoutIfNeeded];
     }];
 }
 
 - (IBAction)didSwipeRight:(UISwipeGestureRecognizer *)sender {
-    NSLog(@"Swipe right detected");
-    // reload data to handle height change since row heights are based on table height
-    [self.tableView reloadData];
     [UIView animateWithDuration:.24 animations:^{
-        self.contentViewLeftMargin.constant = 240;
+        self.contentView.center = CGPointMake(self.contentView.bounds.size.width/2 + 240, self.contentView.center.y);
+        // self.contentView.userInteractionEnabled = NO;
+        self.tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissMenu)];
+        [self.contentView addGestureRecognizer:self.tap];
         [self.view layoutIfNeeded];
     }];
 }

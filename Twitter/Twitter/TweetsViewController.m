@@ -26,6 +26,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Sign Out button
     UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Sign Out" style:UIBarButtonItemStylePlain target:self action:@selector(onLogout)];
     self.navigationItem.leftBarButtonItem = leftBarButton;
@@ -63,7 +64,7 @@
     // set self as table view data source and delegate
     self.tweetTableView.dataSource = self;
     self.tweetTableView.delegate = self;
-    self.tweetTableView.estimatedRowHeight = 90;
+    self.tweetTableView.estimatedRowHeight = 100;
     self.tweetTableView.rowHeight = UITableViewAutomaticDimension;
     
     // Getting Tweets
@@ -122,10 +123,10 @@
     // unhighlight selection
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    TweetViewController *vc = [[TweetViewController alloc] init];
-    vc.delegate = self;
-    vc.tweet = self.tweets[indexPath.row];
-    [self.navigationController pushViewController:vc animated:YES];
+    TweetViewController *tweetVC = [[TweetViewController alloc] init];
+    tweetVC.delegate = self;
+    tweetVC.tweet = self.tweets[indexPath.row];
+    [self.navigationController pushViewController:tweetVC animated:YES];
 }
 
 - (void) loadMoreTweets {

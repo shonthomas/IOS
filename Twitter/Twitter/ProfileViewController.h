@@ -14,8 +14,6 @@
 
 @protocol ProfileViewControllerDelegate <NSObject>
 
-- (void)onPullForAccounts;
-
 @end
 
 @interface ProfileViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, ComposeViewControllerDelegate, TweetCellDelegate, TweetViewControllerDelegate, ProfileCellDelegate>

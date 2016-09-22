@@ -64,14 +64,14 @@
         // if this tweet has no id, then disable all actions
         if (!_tweet.idStr) {
             rightBarButton.enabled = NO;
-//            self.retweetButton.enabled = NO;
-//            self.replyButton.enabled = NO;
-//            self.favoriteButton.enabled = NO;
+            self.retweetButton.enabled = NO;
+            self.replyButton.enabled = NO;
+            self.favoriteButton.enabled = NO;
         }
         
         // if this is the user's own tweet, disable retweet
         if (!_tweet.retweetedTweet && [[[User currentUser] screenName] isEqualToString:user.screenName]) {
-//            self.retweetButton.enabled = NO;
+            self.retweetButton.enabled = NO;
         }
     }
 }
@@ -79,14 +79,6 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    
-    CGFloat navBarHeight = self.navigationController.navigationBar.bounds.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
-    
-    self.topMargin.constant = navBarHeight;
 }
 
 - (void)highlightButton:(UIButton *)button highlight:(BOOL)highlight {
@@ -122,7 +114,7 @@
     [_tweet retweet];
     self.retweetCountLabel.text = [NSString stringWithFormat:@"%ld", (long)_tweet.retweetCount];
     [self highlightButton:self.retweetButton highlight:_tweet.retweeted];
-//    [self.delegate didRetweet:_tweet.retweeted];
+    [self.delegate didRetweet:_tweet.retweeted];
 }
 
 - (IBAction)onFavorite:(id)sender {
@@ -143,7 +135,7 @@
     
     self.favoriteCountLabel.text = [NSString stringWithFormat:@"%ld", (long)tweetToFavorite.favoriteCount];
     [self highlightButton:self.favoriteButton highlight:favorited];
-//    [self.delegate didFavorite:favorited];
+    [self.delegate didFavorite:favorited];
 }
 
 - (void) didTweet:(Tweet *)tweet {
