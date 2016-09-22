@@ -145,7 +145,7 @@
 				7D63B18A1D9340000027ACE5 /* Menu */,
 				7D6CEE951D92E97600031423 /* Tweet */,
 				7D6CEE8F1D9230C800031423 /* Compose */,
-				7D6CEE891D91C92100031423 /* Timeline */,
+				7D6CEE891D91C92100031423 /* Home */,
 				7D6CEE881D91C90C00031423 /* Login */,
 				7D6CEE871D91C8E200031423 /* API */,
 				7D6CEE761D909E4800031423 /* Models */,
@@ -197,7 +197,7 @@
 			name = Login;
 			sourceTree = "<group>";
 		};
-		7D6CEE891D91C92100031423 /* Timeline */ = {
+		7D6CEE891D91C92100031423 /* Home */ = {
 			isa = PBXGroup;
 			children = (
 				7D6CEE7D1D91ACF700031423 /* TweetsViewController.h */,
@@ -207,7 +207,7 @@
 				7D6CEE8B1D91D7B400031423 /* TweetCell.m */,
 				7D6CEE8C1D91D7B400031423 /* TweetCell.xib */,
 			);
-			name = Timeline;
+			name = Home;
 			sourceTree = "<group>";
 		};
 		7D6CEE8F1D9230C800031423 /* Compose */ = {
